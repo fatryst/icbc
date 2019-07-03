@@ -6,7 +6,9 @@
 		"工行",
 		"二维码扫码支付",
 		"工商银行",
-		"商户收单"
+		"商户收单",
+		"pay",
+		"qrcode"
 	],
 	"homepage": "https://github.com/fatryst/icbc",
 	"type": "library",
@@ -19,7 +21,7 @@
 	],
 	"minimum-stability": "dev",
 	"require": {
-		"php": "7.0.*"
+		"php": ">=7.0.0"
 	},
 	"autoload": {
 		"psr-4": {
