@@ -1,6 +1,14 @@
 {
 	"name": "fatryst/icbc",
-	"description": "ICBC PAY SDK FOR LARAVEL5",
+	"description": "工行 商户收单服务 二维码扫码支付",
+	"keywords": [
+		"icbc",
+		"工行",
+		"二维码扫码支付",
+		"工商银行",
+		"商户收单"
+	],
+	"homepage": "https://github.com/fatryst/icbc",
 	"type": "library",
 	"license": "MIT",
 	"authors": [
