@@ -4,6 +4,12 @@
  * datetime: 2019/7/2 11:27
  * author: fa
  * version: 1.0
+ * This file is part of fatryst/icbc.
+ *
+ * (c) fa <zengfa@hotmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 
@@ -26,11 +32,15 @@ class ICBCPay
     private $encryptType;
     private $ca;
     private $password;
+    private $mer_id;
+    private $store_code;
     private $client;
 
-    function __construct($appId = null, $privateKey = null, $icbcPulicKey = null, $signType = null, $encryptKey = null, $encryptType = null, $charset = null, $format = null, $ca = null, $password = null)
+    function __construct($appId = null, $mer_id = null, $store_code = null, $privateKey = null, $icbcPulicKey = null, $signType = null, $encryptKey = null, $encryptType = null, $charset = null, $format = null, $ca = null, $password = null)
     {
         $this->appId = $appId ?? config('icbc.appId', null);
+        $this->mer_id = $mer_id ?? config('icbc.mer_id', null);
+        $this->store_code = $store_code ?? config('icbc.store_code', null);
         $this->privateKey = $privateKey ?? config('icbc.privateKey', null);
         $this->icbcPulicKey = $icbcPulicKey ?? config('icbc.icbcPulicKey', null);
         $this->encryptKey = $encryptKey ?? config('icbc.encryptKey', null);
@@ -50,8 +60,6 @@ class ICBCPay
 
     /**
      * 二维码生成
-     * @param $mer_id
-     * @param $store_code
      * @param $out_trade_no
      * @param $order_amt
      * @param $trade_date
@@ -65,15 +73,15 @@ class ICBCPay
      * @return mixed
      * @throws \Exception
      */
-    public function generate($mer_id, $store_code, $out_trade_no, $order_amt, $trade_date, $trade_time, $pay_expire, $tporder_create_ip, $notify_flag, $attach = null, $sp_flag = '0', $notify_url = '127.0.0.1')
+    public function generate($out_trade_no, $order_amt, $trade_date, $trade_time, $pay_expire, $tporder_create_ip, $notify_flag, $attach = null, $sp_flag = '0', $notify_url = '127.0.0.1')
     {
         $request = array(
             "serviceUrl" => config('icbc.url.qrcode.generate', null),
             "method" => 'POST',
             "isNeedEncrypt" => false,
             "biz_content" => array(
-                "mer_id" => $mer_id,
-                "store_code" => $store_code,
+                "mer_id" => $this->mer_id,
+                "store_code" => $this->store_code,
                 "out_trade_no" => $out_trade_no,
                 "order_amt" => $order_amt,
                 "trade_date" => $trade_date,
@@ -96,7 +104,6 @@ class ICBCPay
 
     /**
      * 二维码退款
-     * @param $mer_id
      * @param $reject_no
      * @param $reject_amt
      * @param null $cust_id
@@ -106,14 +113,14 @@ class ICBCPay
      * @return mixed
      * @throws \Exception
      */
-    public function reject($mer_id, $reject_no, $reject_amt, $cust_id = null, $out_trade_no = null, $order_id = null, $oper_id = null)
+    public function reject($reject_no, $reject_amt, $cust_id = null, $out_trade_no = null, $order_id = null, $oper_id = null)
     {
         $request = array(
             "serviceUrl" => config('icbc.url.qrcode.reject', null),
             "method" => 'POST',
             "isNeedEncrypt" => false,
             "biz_content" => array(
-                "mer_id" => $mer_id,
+                "mer_id" => $this->mer_id,
                 "reject_no" => $reject_no,
                 "reject_amt" => $reject_amt,
                 "cust_id" => $cust_id,
@@ -130,21 +137,20 @@ class ICBCPay
 
     /**
      * 二维码查询
-     * @param $mer_id
      * @param null $cust_id
      * @param null $out_trade_no
      * @param null $order_id
      * @return mixed
      * @throws \Exception
      */
-    public function query($mer_id, $cust_id = null, $out_trade_no = null, $order_id = null)
+    public function query($cust_id = null, $out_trade_no = null, $order_id = null)
     {
         $request = array(
             "serviceUrl" => config('icbc.url.qrcode.query', null),
             "method" => 'POST',
             "isNeedEncrypt" => false,
             "biz_content" => array(
-                "mer_id" => $mer_id,
+                "mer_id" => $this->mer_id,
                 "cust_id" => $cust_id,              //该字段非必输项
                 "out_trade_no" => $out_trade_no,    //该字段非必输项,out_trade_no和order_id选一项上送即可
                 "order_id" => $order_id,            //该字段非必输项,out_trade_no和order_id选一项上送即可
@@ -158,7 +164,6 @@ class ICBCPay
     /**
      * 二维码被扫支付
      * @param $qr_code
-     * @param $mer_id
      * @param $out_trade_no
      * @param $order_amt
      * @param $trade_date
@@ -166,7 +171,7 @@ class ICBCPay
      * @return mixed
      * @throws \Exception
      */
-    public function pay($qr_code, $mer_id, $out_trade_no, $order_amt, $trade_date, $trade_time)
+    public function pay($qr_code, $out_trade_no, $order_amt, $trade_date, $trade_time)
     {
         $request = array(
             "serviceUrl" => config('icbc.url.qrcode.pay', null),
@@ -174,7 +179,7 @@ class ICBCPay
             "isNeedEncrypt" => false,
             "biz_content" => array(
                 "qr_code" => $qr_code,
-                "mer_id" => $mer_id,
+                "mer_id" => $this->mer_id,
                 "out_trade_no" => $out_trade_no,
                 "order_amt" => $order_amt,
                 "trade_date" => $trade_date,
@@ -189,7 +194,6 @@ class ICBCPay
 
     /**
      * 二维码冲正
-     * @param $mer_id
      * @param $out_trade_no
      * @param null $cust_id
      * @param null $order_id
@@ -199,14 +203,14 @@ class ICBCPay
      * @return mixed
      * @throws \Exception
      */
-    public function reverse($mer_id, $out_trade_no, $cust_id = null, $order_id = null, $reject_no = null, $reject_amt = null, $oper_id = null)
+    public function reverse($out_trade_no, $cust_id = null, $order_id = null, $reject_no = null, $reject_amt = null, $oper_id = null)
     {
         $request = array(
             "serviceUrl" => config('icbc.url.qrcode.reverse', null),
             "method" => 'POST',
             "isNeedEncrypt" => false,
             "biz_content" => array(
-                "mer_id" => $mer_id,
+                "mer_id" => $this->mer_id,
                 "out_trade_no" => $out_trade_no,
                 "cust_id" => $cust_id,              //该字段非必输项
                 "order_id" => $order_id,            //该字段非必输项
@@ -223,7 +227,6 @@ class ICBCPay
 
     /**
      * 二维码退款查询
-     * @param $mer_id
      * @param $out_trade_no
      * @param $order_id
      * @param $reject_no
@@ -231,14 +234,14 @@ class ICBCPay
      * @return mixed
      * @throws \Exception
      */
-    public function rejectQuery($mer_id, $out_trade_no, $order_id, $reject_no, $cust_id = null)
+    public function rejectQuery($out_trade_no, $order_id, $reject_no, $cust_id = null)
     {
         $request = array(
             "serviceUrl" => config('icbc.url.qrcode.reject_query', null),
             "method" => 'POST',
             "isNeedEncrypt" => false,
             "biz_content" => array(
-                "mer_id" => $mer_id,
+                "mer_id" => $this->mer_id,
                 "out_trade_no" => $out_trade_no,
                 "order_id" => $order_id,
                 "reject_no" => $reject_no,

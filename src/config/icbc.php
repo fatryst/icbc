@@ -7,7 +7,14 @@
  */
 return [
 
+    // app id
     'appId' => '',
+
+    //商户线下档案编号(特约商户12位，特约部门15位)
+    'mer_id' => '',
+
+    //e生活档案编号
+    'store_code' => '',
 
     // APP应用私钥
     "privateKey" => "",
@@ -15,10 +22,10 @@ return [
     // 网关公钥
     'icbcPulicKey' => "",
 
-
     // AES加密密钥，缺省为空''
     "encryptKey" => "",
 
+    // 签名方式
     "signType" => "RSA",
 
     // v2

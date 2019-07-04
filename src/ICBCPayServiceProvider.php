@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of jwt-auth.
+ * This file is part of fatryst/icbc.
  *
- * (c) Sean Tymon <tymon148@gmail.com>
+ * (c) fa <zengfa@hotmail.com>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
