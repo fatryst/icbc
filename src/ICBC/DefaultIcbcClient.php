@@ -64,7 +64,6 @@ class DefaultIcbcClient
             throw new Exception("Only support GET or POST http method!");
         }
         $respBizContentArr = json_decode($respStr, true)[IcbcConstants::$RESPONSE_BIZ_CONTENT];
-        dd($respBizContentArr);
 
         if ($respBizContentArr['return_code'] != 0) {
             throw new Exception($respBizContentArr['return_msg']);
