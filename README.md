@@ -7,7 +7,7 @@
 
 2. 发布配置文件`icbc.php`  
 ```php artisan vendor:publish --provider="Fatryst\ICBCPay\ICBCPayServiceProvider"```  
-发布时 config/permission.php 配置文件 包含：
+发布时 config/icbc.php 配置文件 包含：
 ```angular2
 return [
     
